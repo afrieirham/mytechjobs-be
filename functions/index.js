@@ -4,6 +4,7 @@ const fetch = require("node-fetch");
 const { stringifyUrl } = require("query-string");
 
 const constructUrlQuery = require("./constructUrlQuery");
+const extractJobDetails = require("./extractJobDetails");
 
 // Create and deploy your first functions
 // https://firebase.google.com/docs/functions/get-started
@@ -59,4 +60,13 @@ async function run() {
   if (results?.length === 0) {
     return { status: "OK", message: "no jobs added" };
   }
+
+  const schemas = await Promise.all(
+    results.map(({ link }) => extractJobDetails(link))
+  );
+
+  const withSchmeas = results.map(({ pagemap, ...rest }, i) => ({
+    ...rest,
+    schema: schemas[i],
+  }));
 }
