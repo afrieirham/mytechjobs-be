@@ -7,6 +7,7 @@ const constructUrlQuery = require("./constructUrlQuery");
 const extractJobDetails = require("./extractJobDetails");
 const getKeywordsFromSnippet = require("./getKeywordsFromSnippet");
 const createManyJobs = require("./createManyJobs");
+const notifyTelegram = require("./notifyTelegram");
 
 // Create and deploy your first functions
 // https://firebase.google.com/docs/functions/get-started
@@ -81,4 +82,22 @@ async function run() {
   });
 
   await createManyJobs(withKeywords);
+
+  // Send alert to telegram
+  const count = withKeywords.length;
+  let telegram = `${count} new jobs!\n\n`;
+
+  withKeywords.forEach((job) => {
+    const { schema, title, link } = job;
+    if (schema) {
+      const { title, hiringOrganization, url } = schema;
+      const company = hiringOrganization?.name;
+      const text = `${title} @ ${company}\n${url}\n\n\n`;
+      telegram += text;
+    } else {
+      telegram += `${title}\n${link}\n\n\n`;
+    }
+  });
+
+  await notifyTelegram(telegram);
 }
