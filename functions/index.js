@@ -6,6 +6,7 @@ const { stringifyUrl } = require("query-string");
 const constructUrlQuery = require("./constructUrlQuery");
 const extractJobDetails = require("./extractJobDetails");
 const getKeywordsFromSnippet = require("./getKeywordsFromSnippet");
+const createManyJobs = require("./createManyJobs");
 
 // Create and deploy your first functions
 // https://firebase.google.com/docs/functions/get-started
@@ -79,5 +80,5 @@ async function run() {
     };
   });
 
-  console.log(withKeywords);
+  await createManyJobs(withKeywords);
 }

@@ -17,6 +17,7 @@
     "date-fns": "^2.29.3",
     "firebase-admin": "^10.0.2",
     "firebase-functions": "^3.18.0",
+    "mongodb": "^4.13.0",
     "node-fetch": "^2",
     "puppeteer": "^19.4.1",
     "query-string": "^7.1.1"
