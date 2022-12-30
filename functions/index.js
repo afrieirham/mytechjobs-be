@@ -5,6 +5,7 @@ const { stringifyUrl } = require("query-string");
 
 const constructUrlQuery = require("./constructUrlQuery");
 const extractJobDetails = require("./extractJobDetails");
+const getKeywordsFromSnippet = require("./getKeywordsFromSnippet");
 
 // Create and deploy your first functions
 // https://firebase.google.com/docs/functions/get-started
@@ -69,4 +70,14 @@ async function run() {
     ...rest,
     schema: schemas[i],
   }));
+
+  const withKeywords = withSchmeas.map((job) => {
+    const keywords = getKeywordsFromSnippet(job.htmlSnippet);
+    return {
+      ...job,
+      keywords,
+    };
+  });
+
+  console.log(withKeywords);
 }
