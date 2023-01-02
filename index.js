@@ -1,37 +1,16 @@
-const functions = require("firebase-functions");
-const admin = require("firebase-admin");
+require("dotenv").config();
+const cron = require("node-cron");
 const fetch = require("node-fetch");
 const { stringifyUrl } = require("query-string");
 
-const constructUrlQuery = require("./constructUrlQuery");
-const extractJobDetails = require("./extractJobDetails");
-const getKeywordsFromSnippet = require("./getKeywordsFromSnippet");
-const createManyJobs = require("./createManyJobs");
-const notifyTelegram = require("./notifyTelegram");
+const constructUrlQuery = require("./functions/constructUrlQuery");
+const extractJobDetails = require("./functions/extractJobDetails");
+const getKeywordsFromSnippet = require("./functions/getKeywordsFromSnippet");
+const createManyJobs = require("./functions/createManyJobs");
+const notifyTelegram = require("./functions/notifyTelegram");
 
-// Create and deploy your first functions
-// https://firebase.google.com/docs/functions/get-started
-
-admin.initializeApp();
-
-// every day at 12am
-exports.crawl = functions
-  .region("asia-southeast1")
-  .pubsub.schedule("0 0 * * *")
-  .timeZone("Asia/Kuala_Lumpur")
-  .onRun(async () => {
-    await run();
-  });
-
-exports.manual = functions
-  .region("asia-southeast1")
-  .https.onRequest(async (req, res) => {
-    await run();
-    res.json({ message: "success" });
-  });
-
-const cx = process.env.GOOGLE_SERACH_CX;
-const key = process.env.GOOGLE_SERACH_KEY;
+const cx = process.env.GOOGLE_SEARCH_CX;
+const key = process.env.GOOGLE_SEARCH_KEY;
 const URL = "https://www.googleapis.com/customsearch/v1";
 
 async function run() {
@@ -100,4 +79,7 @@ async function run() {
   });
 
   await notifyTelegram(telegram);
+  return { status: "OK", message: `${count} jobs added` };
 }
+
+cron.schedule("00 000 * * *", run, { timezone: "Asia/Kuala_Lumpur" });
