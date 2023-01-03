@@ -14,6 +14,7 @@ const key = process.env.GOOGLE_SEARCH_KEY;
 const URL = "https://www.googleapis.com/customsearch/v1";
 
 async function run() {
+  console.log("running");
   const q = constructUrlQuery();
 
   let results = [];
@@ -40,7 +41,7 @@ async function run() {
   }
 
   if (results?.length === 0) {
-    return { status: "OK", message: "no jobs added" };
+    return console.log({ status: "OK", message: "no jobs added" });
   }
 
   const schemas = await Promise.all(
@@ -79,7 +80,7 @@ async function run() {
   });
 
   await notifyTelegram(telegram);
-  return { status: "OK", message: `${count} jobs added` };
+  return console.log({ status: "OK", message: `${count} jobs added` });
 }
 
 cron.schedule("00 00 * * *", run, { timezone: "Asia/Kuala_Lumpur" });
