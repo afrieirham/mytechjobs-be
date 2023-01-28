@@ -40,10 +40,36 @@ const connectToDatabase = async () => {
 const createManyJobs = async (data) => {
   const { db } = await connectToDatabase();
   const createdAt = new Date().toISOString();
-  const formattedData = data.map((d) => ({
-    ...d,
-    createdAt,
-  }));
+
+  const filterPromise = data.map((d) =>
+    db.collection("jobs").find({ link: d.link }).toArray()
+  );
+
+  const results = await Promise.all(filterPromise);
+  const filterResults = results.flat();
+
+  const filteredData = data.filter((d) => {
+    const currentLink = d.link;
+    const hasDuplicates = filterResults.some((r) => r.link === currentLink);
+
+    return !hasDuplicates;
+  });
+
+  if (filteredData.length === 0) {
+    return;
+  }
+
+  const formattedData = filteredData.map((d) => {
+    const postedAt = Boolean(d?.schema?.datePosted)
+      ? d?.schema?.datePosted
+      : createdAt;
+
+    return {
+      ...d,
+      createdAt,
+      postedAt,
+    };
+  });
 
   const jobs = await db.collection("jobs").insertMany(formattedData);
   return jobs;

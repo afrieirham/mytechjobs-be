@@ -8,6 +8,7 @@ const extractJobDetails = require("./functions/extractJobDetails");
 const getKeywordsFromSnippet = require("./functions/getKeywordsFromSnippet");
 const createManyJobs = require("./functions/createManyJobs");
 const notifyTelegram = require("./functions/notifyTelegram");
+const slugify = require("./functions/slugify");
 
 const cx = process.env.GOOGLE_SEARCH_CX;
 const key = process.env.GOOGLE_SEARCH_KEY;
@@ -41,7 +42,7 @@ async function run() {
   }
 
   if (results?.length === 0) {
-    return console.log({ status: "OK", message: "no jobs added" });
+    return console.log({ status: "OK", message: "no jobs found" });
   }
 
   const schemas = await Promise.all(
@@ -54,20 +55,32 @@ async function run() {
   }));
 
   const withKeywords = withSchmeas.map((job) => {
+    const isRemote =
+      job?.schema?.description?.includes("remote") ||
+      job?.schema?.responsibilities?.includes("remote");
     const keywords = getKeywordsFromSnippet(job.htmlSnippet);
     return {
       ...job,
-      keywords,
+      keywords: isRemote ? [...keywords, "remote"] : keywords,
     };
   });
 
-  await createManyJobs(withKeywords);
+  const withSlug = withKeywords.map((job) => ({ ...job, slug: slugify(job) }));
+
+  const inserted = await createManyJobs(withSlug);
+
+  if (!inserted) {
+    return console.log({
+      status: "OK",
+      message: "no jobs added because duplicates",
+    });
+  }
 
   // Send alert to telegram
-  const count = withKeywords.length;
+  const count = withSlug.length;
   let telegram = `${count} new jobs!\n\n`;
 
-  withKeywords.forEach((job) => {
+  withSlug.forEach((job) => {
     const { schema, title, link } = job;
     if (schema) {
       const { title, hiringOrganization, url } = schema;
@@ -83,4 +96,5 @@ async function run() {
   return console.log({ status: "OK", message: `${count} jobs added` });
 }
 
-cron.schedule("00 00 * * *", run, { timezone: "Asia/Kuala_Lumpur" });
+// cron.schedule("00 */6 * * *", run, { timezone: "Asia/Kuala_Lumpur" });
+run();
