@@ -100,4 +100,4 @@ async function run() {
   return console.log({ status: "OK", message: `${count} jobs added` });
 }
 
-cron.schedule("00 */6 * * *", run, { timezone: "Asia/Kuala_Lumpur" });
+cron.schedule("30 */6 * * *", run, { timezone: "Asia/Kuala_Lumpur" });
