@@ -42,6 +42,7 @@ async function run() {
   }
 
   if (results?.length === 0) {
+    await notifyTelegram("do update – no jobs found");
     return console.log({ status: "OK", message: "no jobs found" });
   }
 
@@ -70,6 +71,7 @@ async function run() {
   const inserted = await createManyJobs(withSlug);
 
   if (!inserted) {
+    await notifyTelegram("do update – no jobs added because duplicates");
     return console.log({
       status: "OK",
       message: "no jobs added because duplicates",
@@ -92,7 +94,9 @@ async function run() {
     }
   });
 
-  await notifyTelegram(telegram);
+  await notifyTelegram(telegram, true);
+  await notifyTelegram(`do update – new jobs`);
+
   return console.log({ status: "OK", message: `${count} jobs added` });
 }
 
