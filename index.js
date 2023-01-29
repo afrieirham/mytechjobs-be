@@ -95,7 +95,7 @@ async function run() {
   });
 
   await notifyTelegram(telegram, true);
-  await notifyTelegram(`do update – new jobs`);
+  await notifyTelegram(`do update – ${count} new jobs`);
 
   return console.log({ status: "OK", message: `${count} jobs added` });
 }
