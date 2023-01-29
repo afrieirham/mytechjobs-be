@@ -33,6 +33,7 @@ const constructUrlQuery = () => {
     "flutter",
     "django",
     "kotlin",
+    "webflow",
   ]);
 
   const query = `${time} ${terms} ${location}`;
