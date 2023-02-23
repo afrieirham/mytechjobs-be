@@ -1,7 +1,28 @@
+const { sub } = require("date-fns");
 const { MongoClient } = require("mongodb");
 
 const uri = process.env.MONGO_DB_URI;
 const dbName = process.env.MONGO_DB_NAME;
+
+const places = [
+  "remote",
+  "kuala-lumpur",
+  "selangor",
+  "putrajaya",
+  "johor",
+  "kedah",
+  "kelantan",
+  "melaka",
+  "negeri-sembilan",
+  "pahang",
+  "perak",
+  "perlis",
+  "pulau-pinang",
+  "sarawak",
+  "terengganu",
+  "labuan",
+  "sabah",
+];
 
 const connectToDatabase = async () => {
   const options = {
@@ -75,4 +96,55 @@ const createManyJobs = async (data) => {
   return jobs;
 };
 
-module.exports = createManyJobs;
+const getWeeklyJobs = async () => {
+  const { db } = await connectToDatabase();
+
+  const pipeline = [
+    {
+      $addFields: {
+        date: {
+          $dateFromString: {
+            dateString: "$postedAt",
+          },
+        },
+      },
+    },
+    {
+      $match: {
+        date: {
+          $gte: new Date(sub(new Date(), { days: 7 })),
+        },
+      },
+    },
+    {
+      $match: {
+        keywords: {
+          $in: places.map((p) => p.replaceAll("-", " ")),
+        },
+      },
+    },
+    {
+      $project: {
+        source: 1,
+        company: 1,
+        title: 1,
+        slug: 1,
+        postedAt: 1,
+        "schema.title": 1,
+        "schema.hiringOrganization.name": 1,
+      },
+    },
+  ];
+
+  const cursor = await db
+    .collection("jobs")
+    .aggregate(pipeline)
+    .sort({ postedAt: -1 })
+    .toArray();
+
+  const jobs = JSON.parse(JSON.stringify(cursor));
+
+  return { jobs };
+};
+
+module.exports = { createManyJobs, getWeeklyJobs };
