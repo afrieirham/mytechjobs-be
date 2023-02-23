@@ -87,14 +87,15 @@ async function run() {
   let telegram = `${count} new jobs!\n\n`;
 
   withSlug.forEach((job) => {
-    const { schema, title, link } = job;
+    const { schema, title, slug } = job;
+    const applyUrl = "https://kerja-it.com/jobs/" + slug;
     if (schema) {
-      const { title, hiringOrganization, url } = schema;
+      const { title, hiringOrganization } = schema;
       const company = hiringOrganization?.name;
-      const text = `${title} @ ${company}\n${url}\n\n\n`;
+      const text = `${title} @ ${company}\n${applyUrl}\n\n\n`;
       telegram += text;
     } else {
-      telegram += `${title}\n${link}\n\n\n`;
+      telegram += `${title}\n${applyUrl}\n\n\n`;
     }
   });
 
@@ -104,7 +105,7 @@ async function run() {
   return console.log({ status: "OK", message: `${count} jobs added` });
 }
 
-cron.schedule("30 */6 * * *", run, { timezone: "Asia/Kuala_Lumpur" });
+cron.schedule("0 3,9,15,21 * * *", run, { timezone: "Asia/Kuala_Lumpur" });
 
 const alerts = async () => {
   // get list of subscribers
