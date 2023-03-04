@@ -110,7 +110,7 @@ cron.schedule("0 3,9,15,21 * * *", run, { timezone: "Asia/Kuala_Lumpur" });
 const alerts = async () => {
   // get list of subscribers
   const list_id = process.env.SENDINBLUE_LIST_ID;
-  const url = `https://api.sendinblue.com/v3/contacts/lists/${list_id}/contacts`;
+  const url = `https://api.sendinblue.com/v3/contacts/lists/${list_id}/contacts?limit=500`;
 
   // https://developers.sendinblue.com/reference/getcontactsfromlist
   const config = { headers: { "api-key": process.env.SENDINBLUE_API_KEY } };
