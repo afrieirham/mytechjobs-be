@@ -104,7 +104,7 @@ const getWeeklyJobs = async () => {
       $addFields: {
         date: {
           $dateFromString: {
-            dateString: "$postedAt",
+            dateString: "$createdAt",
           },
         },
       },
@@ -130,6 +130,7 @@ const getWeeklyJobs = async () => {
         title: 1,
         slug: 1,
         postedAt: 1,
+        createdAt: 1,
         "schema.title": 1,
         "schema.hiringOrganization.name": 1,
       },
@@ -139,7 +140,7 @@ const getWeeklyJobs = async () => {
   const cursor = await db
     .collection("jobs")
     .aggregate(pipeline)
-    .sort({ postedAt: -1 })
+    .sort({ createdAt: -1 })
     .toArray();
 
   const jobs = JSON.parse(JSON.stringify(cursor));
