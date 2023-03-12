@@ -1,8 +1,6 @@
 const fetch = require("node-fetch");
 const { load } = require("cheerio");
 
-const getHtmlWithPuppeteer = require("./getHtmlWithPuppeteer");
-
 const extractJobDetails = async (url) => {
   // Check if broken url
   const status = await fetch(url).then((res) => res.status);
@@ -18,44 +16,16 @@ const extractJobDetails = async (url) => {
   const staticJobSchema = $("script[type='application/ld+json']").text();
 
   if (staticJobSchema) {
+    const schema = extract(staticJobSchema);
+
+    if (!schema) {
+      return null;
+    }
+
     return { url, ...extract(staticJobSchema) };
   }
 
-  // // SPAs
-  // const spaResponse = await getHtmlWithPuppeteer(url);
-
-  // if (!spaResponse.includes("JobPosting")) {
-  //   return null;
-  // }
-
-  // if (spaResponse) {
-  //   const spa$ = load(spaResponse);
-  //   const spajobSchema = spa$("script[type='application/ld+json']").text();
-  //   return { url, ...extract(spajobSchema) };
-  // }
-
-  // for briohr
-  const jobTitle = $(".main-header .title-wrapper .title h1").text().trim();
-  const companyName = $(".company-name").text().trim();
-  const location = $(".location").text().trim();
-  const description = $(".description .wrapper span").html();
-
-  // no job schema
-  const pageTitle = $("title").text();
-  const metaDescription = $("meta[name=description]").attr("content");
-
-  const title = jobTitle ? jobTitle : pageTitle;
-
-  const manual = {
-    url,
-    title,
-    companyName,
-    location,
-    description,
-    metaDescription,
-  };
-
-  return manual;
+  return null;
 };
 
 const extract = (html) => {

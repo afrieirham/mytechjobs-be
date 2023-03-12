@@ -59,7 +59,14 @@ async function run() {
     schema: schemas[i],
   }));
 
-  const withKeywords = withSchmeas.map((job) => {
+  const onlyWithSchemas = withSchmeas.filter((j) => Boolean(j.schema));
+
+  if (onlyWithSchemas?.length === 0) {
+    await notifyTelegram("do update – no jobs found");
+    return console.log({ status: "OK", message: "no jobs found" });
+  }
+
+  const withKeywords = onlyWithSchemas.map((job) => {
     const isRemote =
       job?.schema?.description?.includes("remote") ||
       job?.schema?.responsibilities?.includes("remote");
@@ -105,7 +112,7 @@ async function run() {
   return console.log({ status: "OK", message: `${count} jobs added` });
 }
 
-cron.schedule("0 3,9,15,21 * * *", run, { timezone: "Asia/Kuala_Lumpur" });
+cron.schedule("0 */3 * * *", run, { timezone: "Asia/Kuala_Lumpur" });
 
 const alerts = async () => {
   // get list of subscribers
