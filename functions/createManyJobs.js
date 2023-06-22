@@ -1,5 +1,5 @@
 const { sub } = require("date-fns");
-const { MongoClient } = require("mongodb");
+const { MongoClient, ObjectId } = require("mongodb");
 
 const uri = process.env.MONGO_DB_URI;
 const dbName = process.env.MONGO_DB_NAME;
@@ -148,4 +148,32 @@ const getWeeklyJobs = async () => {
   return { jobs };
 };
 
-module.exports = { createManyJobs, getWeeklyJobs };
+const getAllJobs = async () => {
+  const { db } = await connectToDatabase();
+
+  const pipeline = [
+    {
+      $project: {
+        link: 1,
+      },
+    },
+  ];
+
+  const cursor = await db
+    .collection("jobs")
+    .aggregate(pipeline)
+    .sort({ createdAt: 1 })
+    .toArray();
+
+  const jobs = JSON.parse(JSON.stringify(cursor));
+
+  return { jobs };
+};
+
+const deleteJob = async (id) => {
+  const { db } = await connectToDatabase();
+  const job = await db.collection("jobs").deleteOne({ _id: ObjectId(id) });
+  return job;
+};
+
+module.exports = { createManyJobs, getWeeklyJobs, getAllJobs, deleteJob };

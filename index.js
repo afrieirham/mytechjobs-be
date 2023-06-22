@@ -7,7 +7,12 @@ const { format } = require("date-fns");
 const { default: axios } = require("axios");
 const { stringifyUrl } = require("query-string");
 
-const { createManyJobs, getWeeklyJobs } = require("./functions/createManyJobs");
+const {
+  createManyJobs,
+  getWeeklyJobs,
+  getAllJobs,
+  deleteJob,
+} = require("./functions/createManyJobs");
 const slugify = require("./functions/slugify");
 const notifyTelegram = require("./functions/notifyTelegram");
 const extractJobDetails = require("./functions/extractJobDetails");
@@ -200,3 +205,28 @@ const alerts = async () => {
 };
 
 cron.schedule("00 19 * * 5", alerts, { timezone: "Asia/Kuala_Lumpur" });
+
+const removeBrokenLinks = async () => {
+  const { jobs } = await getAllJobs();
+  const remove = jobs.map((j) => {
+    return fetch(j?.link).then((res) => ({ ...j, status: res.status }));
+  });
+
+  const linksWithStatus = await Promise.all(remove);
+
+  const deleted = linksWithStatus.map((l) => {
+    if (l.status < 300) {
+      return;
+    }
+    return deleteJob(l._id);
+  });
+
+  const saved = await Promise.all(deleted);
+  const total_deleted = saved.filter(Boolean);
+
+  await notifyTelegram(`do update – ${total_deleted?.length} jobs deleted`);
+};
+
+cron.schedule("00 01 * * *", removeBrokenLinks, {
+  timezone: "Asia/Kuala_Lumpur",
+});
