@@ -208,23 +208,29 @@ cron.schedule("00 19 * * 5", alerts, { timezone: "Asia/Kuala_Lumpur" });
 
 const removeBrokenLinks = async () => {
   const { jobs } = await getAllJobs();
-  const remove = jobs.map((j) => {
-    return fetch(j?.link).then((res) => ({ ...j, status: res.status }));
-  });
+
+  const remove = jobs
+    .filter((j) => Boolean(j?.link))
+    .map((j) =>
+      fetch(j?.link)
+        .then((res) => ({ ...j, status: res.status }))
+        .catch(() => console.log(j))
+    );
 
   const linksWithStatus = await Promise.all(remove);
 
   const deleted = linksWithStatus.map((l) => {
-    if (l.status < 300) {
+    if (l?.status < 300) {
       return;
     }
-    return deleteJob(l._id);
+    return deleteJob(l?._id);
   });
 
   const saved = await Promise.all(deleted);
   const total_deleted = saved.filter(Boolean);
 
   await notifyTelegram(`do update – ${total_deleted?.length} jobs deleted`);
+  console.log(`do update – ${total_deleted?.length} jobs deleted`);
 };
 
 cron.schedule("00 01 * * *", removeBrokenLinks, {
