@@ -176,4 +176,17 @@ const deleteJob = async (id) => {
   return job;
 };
 
-module.exports = { createManyJobs, getWeeklyJobs, getAllJobs, deleteJob };
+const createJobCount = async (count) => {
+  const { db } = await connectToDatabase();
+  await db
+    .collection("job-count")
+    .insert({ count, createdAt: new Date().toISOString() });
+};
+
+module.exports = {
+  createManyJobs,
+  getWeeklyJobs,
+  getAllJobs,
+  deleteJob,
+  createJobCount,
+};

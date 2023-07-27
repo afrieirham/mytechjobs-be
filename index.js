@@ -12,6 +12,7 @@ const {
   getWeeklyJobs,
   getAllJobs,
   deleteJob,
+  createJobCount,
 } = require("./functions/createManyJobs");
 const slugify = require("./functions/slugify");
 const notifyTelegram = require("./functions/notifyTelegram");
@@ -113,6 +114,7 @@ async function run() {
 
   await notifyTelegram(telegram, true);
   await notifyTelegram(`do update – ${count} new jobs`);
+  await createJobCount(count);
 
   return console.log({ status: "OK", message: `${count} jobs added` });
 }
