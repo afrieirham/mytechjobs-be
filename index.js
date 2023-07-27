@@ -235,6 +235,6 @@ const removeBrokenLinks = async () => {
   console.log(`do update – ${total_deleted?.length} jobs deleted`);
 };
 
-cron.schedule("00 01 * * *", removeBrokenLinks, {
-  timezone: "Asia/Kuala_Lumpur",
-});
+// cron.schedule("00 01 * * *", removeBrokenLinks, {
+//   timezone: "Asia/Kuala_Lumpur",
+// });
