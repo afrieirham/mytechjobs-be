@@ -33,6 +33,7 @@ const constructUrlQuery = () => {
     "flutter",
     "django",
     "kotlin",
+    "ruby on rails",
     "webflow",
   ]);
 
