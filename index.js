@@ -25,6 +25,7 @@ const key = process.env.GOOGLE_SEARCH_KEY;
 const URL = "https://www.googleapis.com/customsearch/v1";
 
 async function run() {
+  await notifyTelegram("starting");
   console.log("running");
   const q = constructUrlQuery();
 
