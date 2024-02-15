@@ -45,7 +45,7 @@ async function run() {
   }
 
   if (results?.length === 0) {
-    await notifyTelegram("do update – no jobs found");
+    await notifyTelegram("ga update – no jobs found");
     return console.log({ status: "OK", message: "no jobs found" });
   }
 
@@ -61,7 +61,7 @@ async function run() {
   const onlyWithSchemas = withSchmeas.filter((j) => Boolean(j.schema));
 
   if (onlyWithSchemas?.length === 0) {
-    await notifyTelegram("do update – no jobs found");
+    await notifyTelegram("ga update – no jobs found");
     console.log({ status: "OK", message: "no jobs found" });
     return;
   }
@@ -82,7 +82,7 @@ async function run() {
   const inserted = await createManyJobs(withSlug);
 
   if (!inserted) {
-    await notifyTelegram("do update – no jobs added because duplicates");
+    await notifyTelegram("ga update – no jobs added because duplicates");
     console.log({
       status: "OK",
       message: "no jobs added because duplicates",
@@ -108,7 +108,7 @@ async function run() {
   });
 
   await notifyTelegram(telegram, true);
-  await notifyTelegram(`do update – ${count} new jobs`);
+  await notifyTelegram(`ga update – ${count} new jobs`);
   await createJobCount(count);
 
   console.log({ status: "OK", message: `${count} jobs added` });
