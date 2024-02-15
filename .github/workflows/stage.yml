@@ -1,0 +1,28 @@
+name: Cron Job Test
+
+on:
+  schedule:
+    - cron: "0 */3 * * *"
+  workflow_dispatch:
+
+jobs:
+  run-script:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Use Node.js 20
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+      - name: Run Node.js script
+        run: |
+          npm install  
+          node test.js
+        env:
+          TELEGRAM_HTTP_TOKEN: ${{ secrets.TELEGRAM_HTTP_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          TELEGRAM_CHAT_ID_ADMIN: ${{ secrets.TELEGRAM_CHAT_ID }}
+          GOOGLE_SEARCH_CX: ${{ secrets.GOOGLE_SEARCH_CX }}
+          GOOGLE_SEARCH_KEY: ${{ secrets.GOOGLE_SEARCH_KEY }}
+          MONGO_DB_URI: ${{ secrets.MONGO_DB_URI }}
+          MONGO_DB_NAME: ${{ secrets.MONGO_DB_NAME }}
