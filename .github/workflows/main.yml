@@ -1,8 +1,8 @@
-name: Scheduled Node.js Job
+name: Fetch Jobs
 
 on:
   schedule:
-    - cron: "*/5 * * * *"
+    - cron: "0 */3 * * *"
   workflow_dispatch:
 
 jobs:
@@ -16,9 +16,13 @@ jobs:
           node-version: 20
       - name: Run Node.js script
         run: |
-          npm install  # Install dependencies if needed
-          node test.js  # Replace with your actual script name
+          npm install  
+          node server_shadow.js
         env:
           TELEGRAM_HTTP_TOKEN: ${{ secrets.TELEGRAM_HTTP_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           TELEGRAM_CHAT_ID_ADMIN: ${{ secrets.TELEGRAM_CHAT_ID_ADMIN }}
+          GOOGLE_SEARCH_CX: ${{ secrets.GOOGLE_SEARCH_CX }}
+          GOOGLE_SEARCH_KEY: ${{ secrets.GOOGLE_SEARCH_KEY }}
+          MONGO_DB_URI: ${{ secrets.MONGO_DB_URI }}
+          MONGO_DB_NAME: ${{ secrets.MONGO_DB_NAME }}
