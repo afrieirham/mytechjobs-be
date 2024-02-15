@@ -62,7 +62,8 @@ async function run() {
 
   if (onlyWithSchemas?.length === 0) {
     await notifyTelegram("do update – no jobs found");
-    return console.log({ status: "OK", message: "no jobs found" });
+    console.log({ status: "OK", message: "no jobs found" });
+    return;
   }
 
   const withKeywords = onlyWithSchemas.map((job) => {
@@ -82,10 +83,11 @@ async function run() {
 
   if (!inserted) {
     await notifyTelegram("do update – no jobs added because duplicates");
-    return console.log({
+    console.log({
       status: "OK",
       message: "no jobs added because duplicates",
     });
+    return;
   }
 
   // Send alert to telegram
@@ -109,7 +111,8 @@ async function run() {
   await notifyTelegram(`do update – ${count} new jobs`);
   await createJobCount(count);
 
-  return console.log({ status: "OK", message: `${count} jobs added` });
+  console.log({ status: "OK", message: `${count} jobs added` });
+  return;
 }
 
 run();

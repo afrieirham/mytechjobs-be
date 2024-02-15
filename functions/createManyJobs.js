@@ -59,7 +59,7 @@ const connectToDatabase = async () => {
 };
 
 const createManyJobs = async (data) => {
-  const { db } = await connectToDatabase();
+  const { db, mongoClient } = await connectToDatabase();
   const createdAt = new Date().toISOString();
 
   const filterPromise = data.map((d) =>
@@ -77,6 +77,7 @@ const createManyJobs = async (data) => {
   });
 
   if (filteredData.length === 0) {
+    await mongoClient.close();
     return;
   }
 
@@ -93,11 +94,12 @@ const createManyJobs = async (data) => {
   });
 
   const jobs = await db.collection("jobs").insertMany(formattedData);
+  await mongoClient.close();
   return jobs;
 };
 
 const getWeeklyJobs = async () => {
-  const { db } = await connectToDatabase();
+  const { db, mongoClient } = await connectToDatabase();
 
   const pipeline = [
     {
@@ -144,12 +146,12 @@ const getWeeklyJobs = async () => {
     .toArray();
 
   const jobs = JSON.parse(JSON.stringify(cursor));
-
+  await mongoClient.close();
   return { jobs };
 };
 
 const getAllJobs = async () => {
-  const { db } = await connectToDatabase();
+  const { db, mongoClient } = await connectToDatabase();
 
   const pipeline = [
     {
@@ -166,21 +168,23 @@ const getAllJobs = async () => {
     .toArray();
 
   const jobs = JSON.parse(JSON.stringify(cursor));
-
+  await mongoClient.close();
   return { jobs };
 };
 
 const deleteJob = async (id) => {
-  const { db } = await connectToDatabase();
+  const { db, mongoClient } = await connectToDatabase();
   const job = await db.collection("jobs").deleteOne({ _id: ObjectId(id) });
+  await mongoClient.close();
   return job;
 };
 
 const createJobCount = async (count) => {
-  const { db } = await connectToDatabase();
+  const { db, mongoClient } = await connectToDatabase();
   await db
     .collection("job-count")
     .insert({ count, createdAt: new Date().toISOString() });
+  await mongoClient.close();
 };
 
 module.exports = {
