@@ -1,4 +1,4 @@
-name: Cron Job Test
+name: Outsource Cron
 
 on:
   workflow_dispatch:
