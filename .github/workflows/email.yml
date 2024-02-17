@@ -1,0 +1,27 @@
+name: Send Weekly Email
+
+on:
+  workflow_dispatch:
+
+jobs:
+  run-script:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Use Node.js 20
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+      - name: Run Node.js script
+        run: |
+          npm install  
+          node email.js
+        env:
+          SENDINBLUE_LIST_ID: ${{ secrets.SENDINBLUE_LIST_ID }}
+          SENDINBLUE_API_KEY: ${{ secrets.SENDINBLUE_API_KEY }}
+          UNSUBSCRIPTION_SECRET: ${{ secrets.UNSUBSCRIPTION_SECRET }}
+
+          SMTP_HOST: ${{ secrets.SMTP_HOST }}
+          SMTP_PORT: ${{ secrets.SMTP_PORT }}
+          SMTP_EMAIL: ${{ secrets.SMTP_EMAIL }}
+          SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
