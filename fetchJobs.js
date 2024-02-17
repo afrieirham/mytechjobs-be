@@ -16,7 +16,7 @@ const cx = process.env.GOOGLE_SEARCH_CX;
 const key = process.env.GOOGLE_SEARCH_KEY;
 const URL = "https://www.googleapis.com/customsearch/v1";
 
-async function run() {
+async function fetchJobs() {
   await notifyTelegram("starting from github actions");
   console.log("running");
   const q = constructUrlQuery();
@@ -115,4 +115,4 @@ async function run() {
   return;
 }
 
-run();
+fetchJobs();

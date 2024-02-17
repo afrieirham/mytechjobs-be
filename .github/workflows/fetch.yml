@@ -1,4 +1,4 @@
-name: Cron Job Test
+name: Fetch Kerja IT Jobs
 
 on:
   workflow_dispatch:
@@ -15,12 +15,14 @@ jobs:
       - name: Run Node.js script
         run: |
           npm install  
-          node test.js
+          node server_shadow.js
         env:
-          TELEGRAM_HTTP_TOKEN: ${{ secrets.TELEGRAM_HTTP_TOKEN }}
-          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-          TELEGRAM_CHAT_ID_ADMIN: ${{ secrets.TELEGRAM_CHAT_ID }}
           GOOGLE_SEARCH_CX: ${{ secrets.GOOGLE_SEARCH_CX }}
           GOOGLE_SEARCH_KEY: ${{ secrets.GOOGLE_SEARCH_KEY }}
+
           MONGO_DB_URI: ${{ secrets.MONGO_DB_URI }}
           MONGO_DB_NAME: ${{ secrets.MONGO_DB_NAME }}
+
+          TELEGRAM_HTTP_TOKEN: ${{ secrets.TELEGRAM_HTTP_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          TELEGRAM_CHAT_ID_ADMIN: ${{ secrets.TELEGRAM_CHAT_ID_ADMIN }}
