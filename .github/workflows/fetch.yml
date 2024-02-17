@@ -15,7 +15,7 @@ jobs:
       - name: Run Node.js script
         run: |
           npm install  
-          node server_shadow.js
+          node fetchJobs.js
         env:
           GOOGLE_SEARCH_CX: ${{ secrets.GOOGLE_SEARCH_CX }}
           GOOGLE_SEARCH_KEY: ${{ secrets.GOOGLE_SEARCH_KEY }}
