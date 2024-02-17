@@ -17,6 +17,9 @@ jobs:
           npm install  
           node email.js
         env:
+          MONGO_DB_URI: ${{ secrets.MONGO_DB_URI }}
+          MONGO_DB_NAME: ${{ secrets.MONGO_DB_NAME }}
+
           SENDINBLUE_LIST_ID: ${{ secrets.SENDINBLUE_LIST_ID }}
           SENDINBLUE_API_KEY: ${{ secrets.SENDINBLUE_API_KEY }}
           UNSUBSCRIPTION_SECRET: ${{ secrets.UNSUBSCRIPTION_SECRET }}
