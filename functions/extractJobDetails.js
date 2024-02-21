@@ -44,7 +44,8 @@ const extract = (html) => {
 
   // Check if jsob-ld is "JobPosting"
   const needed = JSON.parse(html);
-  if (needed["@type"] === "JobPosting") {
+
+  if (needed && needed["@type"] === "JobPosting") {
     return needed;
   }
 
