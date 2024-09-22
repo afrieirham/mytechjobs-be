@@ -1,4 +1,4 @@
-name: Send Weekly Email
+name: Remove Jobs (> 6 months)
 
 on:
   workflow_dispatch:
@@ -15,19 +15,10 @@ jobs:
       - name: Run Node.js script
         run: |
           npm install  
-          node email.js
+          node clean.js
         env:
           MONGO_DB_URI: ${{ secrets.MONGO_DB_URI }}
           MONGO_DB_NAME: ${{ secrets.MONGO_DB_NAME }}
-
-          SENDINBLUE_LIST_ID: ${{ secrets.SENDINBLUE_LIST_ID }}
-          SENDINBLUE_API_KEY: ${{ secrets.SENDINBLUE_API_KEY }}
-          UNSUBSCRIPTION_SECRET: ${{ secrets.UNSUBSCRIPTION_SECRET }}
-
-          SMTP_HOST: ${{ secrets.SMTP_HOST }}
-          SMTP_PORT: ${{ secrets.SMTP_PORT }}
-          SMTP_EMAIL: ${{ secrets.SMTP_EMAIL }}
-          SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
 
           TELEGRAM_HTTP_TOKEN: ${{ secrets.TELEGRAM_HTTP_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}

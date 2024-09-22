@@ -187,10 +187,28 @@ const createJobCount = async (count) => {
   await mongoClient.close();
 };
 
+const deleteJobs = async () => {
+  const { db, mongoClient } = await connectToDatabase();
+
+  const sixMonthsAgo = new Date();
+  sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
+
+  const formattedDate = sixMonthsAgo.toISOString();
+
+  const jobs = await db
+    .collection("jobs")
+    .deleteMany({ createdAt: { $lt: formattedDate } });
+
+  await mongoClient.close();
+
+  return jobs;
+};
+
 module.exports = {
   createManyJobs,
   getWeeklyJobs,
   getAllJobs,
   deleteJob,
+  deleteJobs,
   createJobCount,
 };

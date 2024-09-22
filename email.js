@@ -89,7 +89,7 @@ const alerts = async () => {
   await Promise.all($email);
 
   await notifyTelegram(
-    `do update – email sent to ${subscribers?.length} people`
+    `ga update – email sent to ${subscribers?.length} people`
   );
 };
 
